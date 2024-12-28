@@ -35,28 +35,18 @@ services:
     env_file: ./config/.env
     networks:
       - webnet
-  # mongodb:
-  #   image: mongo:latest
-  #   ports:
-  #     - "27017:27017"
-  #   env_file: ./config/.env
-  #   volumes:
-  #     - mongodb_data:/data/db
 
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   ports:
-  #     - "5672:5672"
-  #     - "15672:15672"
-  #   env_file: ./config/.env
-
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
-  #     - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file: ./config/.env
+    networks:
+      - webnet
 
 volumes:
   mysql_data:
-#   mongodb_data:
 networks:
   # Network for db, use it for services that need access to the db:
   mysqlnet:

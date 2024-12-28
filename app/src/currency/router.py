@@ -20,4 +20,4 @@ async def get_currency(
 ) -> CurrencyResponse:
     "Returns currency value."
 
-    return await service.act(currency=currency.upper())
+    return await service.fetch_currency(currency=currency.upper())

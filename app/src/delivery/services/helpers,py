@@ -1,0 +1,10 @@
+from app.config import Settings
+
+
+def get_rabbit_url(settings: Settings):
+    return "amqp://{}:{}@{}:{}/".format(
+        settings.rabbitmq_user,
+        settings.rabbitmq_password,
+        settings.rabbitmq_host,
+        settings.rabbitmq_port,
+    )

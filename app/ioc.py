@@ -18,6 +18,7 @@ import app.di
 from app.config import Settings
 from app.db import DatabaseSessionManager
 from app.src.currency.service import ExchangeRateService
+from app.src.delivery.services.parcel_publisher import PublisherService
 from app.src.delivery.services.parcels_service import ParcelService
 from app.src.users.services import UserService
 
@@ -85,8 +86,21 @@ class AppProvider(Provider):
     async def parcel_service(
         self,
         db_session: AsyncSession,
+        exchange_service: ExchangeRateService,
     ) -> AsyncIterable[ParcelService]:
-        yield ParcelService(db_session=db_session)
+        yield ParcelService(
+            db_session=db_session,
+            exchange_service=exchange_service,
+        )
+
+    @provide(scope=Scope.REQUEST)
+    async def publisher_service(
+        self,
+        settings: Settings,
+    ) -> AsyncIterable[PublisherService]:
+        publisher_service = PublisherService(settings=settings)
+        yield publisher_service
+        await publisher_service.close()
 
 
 def setup_container(

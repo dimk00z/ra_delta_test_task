@@ -29,7 +29,8 @@ class UserService:
 
     async def get_user(self, session: dict) -> User:
         user_id = session.get(USER_ID_KEY)
-
+        # TODO remove it!
+        user_id = TEST_USER_ID
         if not user_id:
             raise NotAuthorizedError(
                 status_code=status.HTTP_401_UNAUTHORIZED,

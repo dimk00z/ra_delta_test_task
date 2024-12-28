@@ -33,7 +33,7 @@ async def startup_events(settings: Settings):
     # Update usd rate in start
     container = get_container()
     service = await container.get(ExchangeRateService)
-    await service.act(currency="USD")
+    await service.fetch_currency(currency="USD")
     if settings.debug:
         pass
         # db init logic

@@ -49,7 +49,7 @@ class ExchangeRateService:
     redis: Redis
     cb_url = "https://www.cbr-xml-daily.ru/daily_json.js"
 
-    async def act(self, currency: str = "USD") -> CurrencyResponse:
+    async def fetch_currency(self, currency: str = "USD") -> CurrencyResponse:
         """Got currency"""
         currency = currency.upper()
         return CurrencyResponse(

@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from random import choice
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -12,39 +13,45 @@ from app.src.users.services import UserService
 URL = "/api/v1/delivery/parcels"
 
 
-async def handle_request(test_app):
+async def handle_request(test_app, parcel_id):
     async with AsyncClient(
         transport=ASGITransport(app=test_app),
         base_url="http://test",
     ) as ac:
-        return await ac.get(URL)
+        return await ac.get(f"{URL}/{parcel_id}")
 
 
 @pytest.mark.asyncio
-async def test_get_parcels_unauthorized(
+async def test_get_parcel_unauthorized(
     test_app,
     random_parcels_for_user: list[Parcel],
 ):
-    response = await handle_request(test_app=test_app)
+    random_parcel: Parcel = choice(random_parcels_for_user)
+    response = await handle_request(
+        test_app=test_app,
+        parcel_id=str(random_parcel.id),
+    )
     assert response.status_code == HTTPStatus.UNAUTHORIZED
 
 
 @pytest.mark.asyncio
-async def test_get_parcels_authorized(
+async def test_get_parcel_authorized(
     test_app,
     random_parcels_for_user: list[Parcel],
     test_user: User,
 ):
+    random_parcel: Parcel = choice(random_parcels_for_user)
     with patch.object(
         UserService,
         "get_user",
         new=AsyncMock(return_value=test_user),
     ):
-        response = await handle_request(test_app=test_app)
+        response = await handle_request(
+            test_app=test_app,
+            parcel_id=str(random_parcel.id),
+        )
     assert response.status_code == HTTPStatus.OK
-    got_parcels = response.json()
-
-    assert len(got_parcels) == len(random_parcels_for_user)
-    for parcel in got_parcels:
-        # Check valid results
-        GetParcelResponseDTO.model_validate(parcel)
+    parcel_dto: GetParcelResponseDTO = GetParcelResponseDTO.model_validate(
+        response.json(),
+    )
+    assert parcel_dto.id == random_parcel.id

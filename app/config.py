@@ -10,9 +10,14 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     api_version: int = Field(default=1)
     debug: bool = Field(default=True)
+    # rabbit
+    rabbitmq_host: str = "rabbitmq"
+    rabbitmq_port: int = 5672
+    rabbitmq_user: str = "guest"
+    rabbitmq_password: str = "guest"
+    queue_name: str = "delivery"
 
-    mongodb_url: str = "mongodb://mongodb:27017"
-    rabbitmq_url: str = "amqp://guest:guest@rabbitmq:5672/"
+    # db
     db_host: str = "db"
     mysql_database: str = "delivery"
     mysql_user: str = "user"

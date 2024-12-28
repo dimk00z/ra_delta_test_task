@@ -23,6 +23,10 @@ class ParcelType(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_column_kwargs={"onupdate": lambda: datetime.now(timezone.utc)},
     )
+    parcels: list["Parcel"] = Relationship(  # noqa
+        back_populates="parcel_type",
+        cascade_delete=True,
+    )
 
 
 class Parcel(SQLModel, table=True):
@@ -58,6 +62,9 @@ class Parcel(SQLModel, table=True):
     parcel_type_id: UUID | None = Field(
         default=None,
         foreign_key="parcel_types.id",
+    )
+    parcel_type: ParcelType | None = Relationship(
+        back_populates="parcels",
     )
     request_id: UUID = Field(unique=True)  # idempotency key
     user_id: UUID | None = Field(
