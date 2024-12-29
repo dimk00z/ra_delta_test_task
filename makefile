@@ -22,6 +22,9 @@ down:
 drop:
 	docker compose down -v
 
+migrate:
+	docker compose run --rm web uv run alembic upgrade head
+
 pre_commit_install:
 	uv run --all-extras pre-commit install
 	
