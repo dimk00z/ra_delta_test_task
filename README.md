@@ -12,13 +12,15 @@ This project is a microservice designed to manage international delivery service
 
 1.Clone the Repository
 
-git clone [<repository_url>](https://github.com/dimk00z/ra_delta_test_task)
+```bash
+git clone https://github.com/dimk00z/ra_delta_test_task
 cd ra_delta_test_task
+```
 
 2.Copy and Configure the Environment File
 
 ```bash
-cp .env.example .env
+cp ./config/.env.example ./config/.env
 ```
 
 Edit the .env file with your desired configuration.
