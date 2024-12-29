@@ -3,11 +3,11 @@ from uuid import UUID
 
 from dishka.integrations.fastapi import DishkaRoute, FromDishka
 from fastapi import APIRouter, Path, Query, Request, status
-from fastapi.responses import JSONResponse
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.src.delivery.entities import (
+    BackgroundCreationResponse,
     GetParcelResponseDTO,
     GetParcelsFilterParams,
     RegisterParcelDTO,
@@ -85,13 +85,14 @@ async def register_parcel(
     "/parcels/background",
     tags=["api"],
     status_code=status.HTTP_201_CREATED,
+    response_model=BackgroundCreationResponse,
 )
 async def register_parcel_with_mb(
     request: Request,
     parcel_dto: RegisterParcelDTO,
     user_service: FromDishka[UserService],
     publisher_service: FromDishka[PublisherService],
-) -> JSONResponse:
+) -> BackgroundCreationResponse:
     "Returns simple object"
     user: User = await user_service.get_user(session=request.session)
     message: RegisterParcelWithUserDTO = RegisterParcelWithUserDTO(
@@ -99,7 +100,7 @@ async def register_parcel_with_mb(
         **parcel_dto.model_dump(),
     )
     await publisher_service.publish_message(message.model_dump_json())
-    return JSONResponse({"status": "in progress"})
+    return BackgroundCreationResponse.IN_PROGRESS
 
 
 @delivery_router.get(

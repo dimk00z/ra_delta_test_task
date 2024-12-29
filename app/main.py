@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -14,6 +15,7 @@ from app.middleware import apply_middlewares
 from app.routes import apply_routes, tags_metadata
 from app.src.currency.service import ExchangeRateService
 from app.src.delivery.models import init_parcel_types
+from app.src.delivery.services.worker_service import BackgroundWorkerService
 
 scheduler = AsyncIOScheduler()
 settings = get_settings()
@@ -29,11 +31,13 @@ async def init_db(container):
     await init_parcel_types(session_manager=session_manager)
 
 
-async def startup_events(settings: Settings):
+async def startup_events(settings: Settings, container):
     # Update usd rate in start
     container = get_container()
-    service = await container.get(ExchangeRateService)
-    await service.fetch_currency(currency="USD")
+    # update usd on start
+    exchange_service = await container.get(ExchangeRateService)
+    await exchange_service.fetch_currency(currency="USD")
+
     if settings.debug:
         pass
         # db init logic
@@ -52,15 +56,19 @@ async def startup_events(settings: Settings):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    settings = get_settings()
-
+    container = get_container()
     logger.info("App %s is starting", settings.title)
 
-    await startup_events(settings)
+    await startup_events(settings, container)
+    if not settings.testing_mode:
+        # do not connect in testing
+        background_worker_service = await container.get(BackgroundWorkerService)
+        asyncio.create_task(background_worker_service.run())
 
     yield
     # TODO add thing for graceful shutdown
     scheduler.shutdown()
+    await background_worker_service.close()
     await app.state.dishka_container.close()
     logger.info("App %s closed", settings.title)
 

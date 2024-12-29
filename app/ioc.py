@@ -20,6 +20,7 @@ from app.db import DatabaseSessionManager
 from app.src.currency.service import ExchangeRateService
 from app.src.delivery.services.parcel_publisher import PublisherService
 from app.src.delivery.services.parcels_service import ParcelService
+from app.src.delivery.services.worker_service import BackgroundWorkerService
 from app.src.users.services import UserService
 
 REDIS_HEALTH_CHECK_INTERVAL_S = 600
@@ -63,10 +64,17 @@ class AppProvider(Provider):
         return DatabaseSessionManager(engine=engine, logger=logger)
 
     @provide(scope=Scope.APP)
+    async def background_worker_service(
+        self,
+        settings: Settings,
+    ) -> AsyncIterable[BackgroundWorkerService]:
+        yield BackgroundWorkerService(settings=settings)
+
+    @provide(scope=Scope.APP)
     def exchange_service(self, redis: Redis) -> ExchangeRateService:
         return ExchangeRateService(redis=redis)
 
-    @provide(scope=Scope.REQUEST)
+    @provide(scope=Scope.APP)
     async def db_session(
         self,
         session_manager: DatabaseSessionManager,
@@ -74,7 +82,7 @@ class AppProvider(Provider):
         async with session_manager.session() as session:
             yield session
 
-    @provide(scope=Scope.REQUEST)
+    @provide(scope=Scope.APP)
     async def user_service(
         self,
         db_session: AsyncSession,
@@ -82,7 +90,7 @@ class AppProvider(Provider):
     ) -> AsyncIterable[UserService]:
         yield UserService(db_session=db_session, settings=settings)
 
-    @provide(scope=Scope.REQUEST)
+    @provide(scope=Scope.APP)
     async def parcel_service(
         self,
         db_session: AsyncSession,

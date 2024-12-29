@@ -1,4 +1,6 @@
 from functools import lru_cache
+from os import path
+from sys import argv
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -30,6 +32,8 @@ class Settings(BaseSettings):
     https_only: bool = False
 
     workers: int = 1
+
+    testing_mode: bool = path.basename(argv[0]) in {"pytest", "py.test"}
     model_config = SettingsConfigDict(
         env_file="../config/.env",
         case_sensitive=False,

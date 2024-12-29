@@ -1,9 +1,14 @@
 from decimal import Decimal
+from enum import Enum
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
 from app.src.delivery.models import Parcel
+
+
+class BackgroundCreationResponse(str, Enum):
+    IN_PROGRESS = "in progress"
 
 
 class GetParcelsFilterParams(BaseModel):

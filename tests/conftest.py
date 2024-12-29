@@ -1,5 +1,4 @@
 import logging
-from uuid import UUID
 
 import pytest
 import pytest_asyncio
@@ -15,12 +14,10 @@ from app import main
 from app.config import Settings, get_settings
 from app.db import DatabaseSessionManager
 from app.src.users.models import User
-from app.src.users.services import UserService
+from app.src.users.services import TEST_USER_ID, UserService
 from tests.mock_ioc import MockConnectionProvider
 
 pytestmark = pytest.mark.anyio
-
-TEST_USER_ID = UUID("76ebc6a6-a48f-4dee-a95f-db2c63ef62d3")
 
 
 @pytest.fixture
