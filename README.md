@@ -50,23 +50,23 @@ API Documentation
 
 Interactive API documentation is available via Swagger:
 
-- GET /docs
+- `GET /docs`
 
 Core API Endpoints
 
 Delivery API
 
-- GET /api/v1/currency/{currency} Retrieve the exchange rate for a given currency.
-- GET /api/v1/delivery/parcels/types Fetch all available parcel types.
-- GET /api/v1/delivery/parcels Retrieve parcels associated with a user.
-- POST /api/v1/delivery/parcels/background Register a parcel asynchronously using RabbitMQ.
-- POST /api/v1/delivery/parcels Register a parcel synchronously. Useful for testing business logic.
-- GET /api/v1/delivery/parcels/{parcel_id} Fetch details of a specific parcel.
+- `GET /api/v1/currency/{currency}` Retrieve the exchange rate for a given currency.
+- `GET /api/v1/delivery/parcels/types` Fetch all available parcel types.
+- `GET /api/v1/delivery/parcels` Retrieve parcels associated with a user.
+- `POST /api/v1/delivery/parcels/background` Register a parcel asynchronously using RabbitMQ.
+- `POST /api/v1/delivery/parcels` Register a parcel synchronously. Useful for testing business logic.
+- `GET /api/v1/delivery/parcels/{parcel_id}` Fetch details of a specific parcel.
 
 Health Check API
 
-- GET /api/v1/health/ping Simple health check endpoint.
-- GET /api/v1/health/check Detailed health check endpoint.
+- `GET /api/v1/health/ping` Simple health check endpoint.
+- `GET /api/v1/health/check` Detailed health check endpoint.
 
 Development
 
