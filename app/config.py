@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     api_version: int = Field(default=1)
     debug: bool = Field(default=True)
+    init_db: bool = Field(default=False)
     # rabbit
     rabbitmq_host: str = "rabbitmq"
     rabbitmq_port: int = 5672

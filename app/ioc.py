@@ -52,7 +52,6 @@ class AppProvider(Provider):
             settings.db_host,
             settings.mysql_database,
         )
-
         return create_async_engine(database_url)
 
     @provide(scope=Scope.APP)

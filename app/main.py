@@ -3,7 +3,6 @@ import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 
@@ -17,7 +16,6 @@ from app.src.currency.service import ExchangeRateService
 from app.src.delivery.models import init_parcel_types
 from app.src.delivery.services.worker_service import BackgroundWorkerService
 
-scheduler = AsyncIOScheduler()
 settings = get_settings()
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -38,20 +36,9 @@ async def startup_events(settings: Settings, container):
     exchange_service = await container.get(ExchangeRateService)
     await exchange_service.fetch_currency(currency="USD")
 
-    if settings.debug:
-        pass
+    if settings.init_db:
         # db init logic
-        # await init_db(container=container)
-
-    scheduler.add_job(
-        # TODO fix it
-        lambda: logger.error(
-            "get_package_service().calculate_delivery_costs()",
-        ),
-        "interval",
-        minutes=5,
-    )
-    scheduler.start()
+        await init_db(container=container)
 
 
 @asynccontextmanager
@@ -66,8 +53,7 @@ async def lifespan(app: FastAPI):
         asyncio.create_task(background_worker_service.run())
 
     yield
-    # TODO add thing for graceful shutdown
-    scheduler.shutdown()
+    # graceful shutdown
     await background_worker_service.close()
     await app.state.dishka_container.close()
     logger.info("App %s closed", settings.title)
