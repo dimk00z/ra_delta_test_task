@@ -85,6 +85,27 @@ Run the tests with:
 
 `export PYTHONPATH=. && uv run pytest ./tests`
 
+Test results:
+
+```bash
+export PYTHONPATH=. && uv run pytest ./tests
+==================================== test session starts =====================================
+platform darwin -- Python 3.13.0, pytest-8.3.4, pluggy-1.5.0
+configfile: pyproject.toml
+plugins: Faker-33.1.0, asyncio-0.25.0, anyio-4.7.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=session
+collected 10 items                                                                           
+
+tests/app/currency/test_currency.py .                                                  [ 10%]
+tests/app/delivery/test_get_parcel.py ..                                               [ 30%]
+tests/app/delivery/test_get_parcels.py ..                                              [ 50%]
+tests/app/delivery/test_parcel_creation.py ..                                          [ 70%]
+tests/app/delivery/test_parcels_types.py .                                             [ 80%]
+tests/app/health/test_health.py ..                                                     [100%]
+
+===================================== 10 passed in 0.12s =====================================
+```
+
 Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request.
