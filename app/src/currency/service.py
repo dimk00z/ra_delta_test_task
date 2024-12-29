@@ -62,7 +62,7 @@ class ExchangeRateService:
             currency=currency,
         ):
             return value
-        # in prod better way is using redis lock
+        # in prod better way is using redis lock but it conflicts with fakeredis
         async with asyncio.Lock():
             return await self._load_cached_currency(
                 currency=currency,
