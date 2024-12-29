@@ -40,6 +40,7 @@ Technologies Used
 - Cache: Redis (FakeRedis for testing)
 - Message Broker: RabbitMQ
 - Framework: FastAPI
+- ORM: SQLModel(SQLAlchemy under the hood)
 - Validation: Pydantic
 - Dependency Injection: Dishka
 - Code Quality Tools:
